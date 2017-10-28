@@ -1,0 +1,36 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="eparkmo.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="server" Type="System.String" Scope="User">
+      <Value Profile="(Default)">us-cdbr-iron-east-05.cleardb.net</Value>
+    </Setting>
+    <Setting Name="port" Type="System.String" Scope="User">
+      <Value Profile="(Default)">3306</Value>
+    </Setting>
+    <Setting Name="username" Type="System.String" Scope="User">
+      <Value Profile="(Default)">b228a75c3e4c6c</Value>
+    </Setting>
+    <Setting Name="password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">3be7f416</Value>
+    </Setting>
+    <Setting Name="database" Type="System.String" Scope="User">
+      <Value Profile="(Default)">heroku_5be893fa622a4ae</Value>
+    </Setting>
+    <Setting Name="datetime" Type="System.String" Scope="User">
+      <Value Profile="(Default)">true</Value>
+    </Setting>
+    <Setting Name="smtp_host" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mail.smtp2go.com</Value>
+    </Setting>
+    <Setting Name="smtp_port" Type="System.String" Scope="User">
+      <Value Profile="(Default)">2525</Value>
+    </Setting>
+    <Setting Name="smtp_username" Type="System.String" Scope="User">
+      <Value Profile="(Default)">gualvezdavid@gmail.com</Value>
+    </Setting>
+    <Setting Name="smtp_password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">7P4oRVpU0k4l</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
