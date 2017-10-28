@@ -12,10 +12,10 @@ using MySql.Data;
 
 namespace eparkmo.admin.parking
 {
-    public partial class viewParking : UserControl
+    public partial class viewParkingFee : UserControl
     {
         private MySqlConnection con;
-        public viewParking()
+        public viewParkingFee()
         {
             InitializeComponent();
             //--Connecting to Database------
@@ -23,7 +23,7 @@ namespace eparkmo.admin.parking
             con = new MySqlConnection(i.constr);
             //------------------------------
             DisplayFixer();
-            displayParkingArea();
+            displayParkingFee();
         }
 
         public void DisplayFixer()
@@ -37,43 +37,33 @@ namespace eparkmo.admin.parking
             this.Height = scr_height - (65 + 24 + 22);
         }
 
-        public void displayParkingArea()
+        private void displayParkingFee()
         {
-            //id 
-            //area_code 
-            //car_capacity 
-            //car_remaining 
-            //motorcycle_capacity 
-            //motorcycle_remaining 
-            //status 
-            //created_at 
-            //updated_at 
+            // $table->integer('first_hours');
+            // $table->double('fee');
+            // $table->double('succeeding_hour_fee');
+            // $table->string('costing_for');
 
-            string qry = "SELECT id,area_code as 'Area Code',"+
-                "car_capacity as 'Car capacity',car_remaining as 'Car remaining',"+
-                "motorcycle_capacity as 'Motor capacity',"+
-                "motorcycle_remaining as 'Motor remaining',"+
-                "status as 'Online Status'" +
-                " FROM parking_lots";
+            string qry = "SELECT id,"+
+                "first_hours as 'First Hours', "+
+                "fee as 'Fee', "+
+                "succeeding_hour_fee as 'Succeeding Hour Fee', "+
+                "costing_for as 'Costing For?',created_at as 'Created At' " +
+                " FROM parking_fees";
             con.Open();
             MySqlDataAdapter da = new MySqlDataAdapter(qry, con);
             DataTable dt = new DataTable();
             da.Fill(dt);
             dgv.DataSource = dt;
             dgv.Columns[0].Visible = false;
-            con.Close(); 
+            con.Close();
         }
 
-        private void viewParking_Load(object sender, EventArgs e)
+        private void viewParkingFee_Load(object sender, EventArgs e)
         {
 
         }
 
-        private void btnNewParking_Click(object sender, EventArgs e)
-        {
-            var x = new admin.parking.newParking();
-            x.ShowDialog();
-            displayParkingArea();
-        }
+        
     }
 }

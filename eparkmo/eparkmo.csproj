@@ -115,6 +115,12 @@
     <Compile Include="admin\parking\viewParking.Designer.cs">
       <DependentUpon>viewParking.cs</DependentUpon>
     </Compile>
+    <Compile Include="admin\parking\viewParkingFee.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="admin\parking\viewParkingFee.Designer.cs">
+      <DependentUpon>viewParkingFee.cs</DependentUpon>
+    </Compile>
     <Compile Include="employee\index.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -166,6 +172,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="admin\parking\viewParking.resx">
       <DependentUpon>viewParking.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="admin\parking\viewParkingFee.resx">
+      <DependentUpon>viewParkingFee.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="employee\index.resx">
       <DependentUpon>index.cs</DependentUpon>

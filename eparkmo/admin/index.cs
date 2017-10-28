@@ -98,5 +98,14 @@ namespace eparkmo.admin
             pnl_display.Controls.Clear();
             pnl_display.Controls.Add(z);
         }
+
+        private void viewToolStripMenuItem1_Click(object sender, EventArgs e)
+        { 
+            this.Text = "Parking";
+            this.Refresh();
+            var z = new admin.parking.viewParkingFee();
+            pnl_display.Controls.Clear();
+            pnl_display.Controls.Add(z);
+        }
     }
 }

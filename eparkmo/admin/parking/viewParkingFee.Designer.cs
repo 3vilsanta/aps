@@ -1,6 +1,6 @@
 ﻿namespace eparkmo.admin.parking
 {
-    partial class viewParking
+    partial class viewParkingFee
     {
         /// <summary> 
         /// Required designer variable.
@@ -49,10 +49,9 @@
             this.btnNewParking.Name = "btnNewParking";
             this.btnNewParking.Primary = true;
             this.btnNewParking.Size = new System.Drawing.Size(105, 36);
-            this.btnNewParking.TabIndex = 41;
+            this.btnNewParking.TabIndex = 44;
             this.btnNewParking.Text = "Create new";
             this.btnNewParking.UseVisualStyleBackColor = true;
-            this.btnNewParking.Click += new System.EventHandler(this.btnNewParking_Click);
             // 
             // dgv
             // 
@@ -98,8 +97,8 @@
             this.dgv.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dgv.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv.Size = new System.Drawing.Size(660, 373);
-            this.dgv.TabIndex = 40;
+            this.dgv.Size = new System.Drawing.Size(660, 367);
+            this.dgv.TabIndex = 43;
             // 
             // label1
             // 
@@ -108,20 +107,20 @@
             this.label1.ForeColor = System.Drawing.Color.DimGray;
             this.label1.Location = new System.Drawing.Point(15, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(151, 29);
-            this.label1.TabIndex = 39;
-            this.label1.Text = "Parking Area";
+            this.label1.Size = new System.Drawing.Size(144, 29);
+            this.label1.TabIndex = 42;
+            this.label1.Text = "Parking Fee";
             // 
-            // viewParking
+            // viewParkingFee
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.btnNewParking);
             this.Controls.Add(this.dgv);
             this.Controls.Add(this.label1);
-            this.Name = "viewParking";
+            this.Name = "viewParkingFee";
             this.Size = new System.Drawing.Size(694, 442);
-            this.Load += new System.EventHandler(this.viewParking_Load);
+            this.Load += new System.EventHandler(this.viewParkingFee_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -44,6 +44,7 @@
             this.companyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnl_display = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.usersClientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -54,7 +55,8 @@
             this.accountToolStripMenuItem,
             this.employeeToolStripMenuItem,
             this.parkingToolStripMenuItem,
-            this.companyToolStripMenuItem});
+            this.companyToolStripMenuItem,
+            this.usersClientToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -131,14 +133,14 @@
             this.viewToolStripMenuItem});
             this.areaToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
             this.areaToolStripMenuItem.Name = "areaToolStripMenuItem";
-            this.areaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.areaToolStripMenuItem.Text = "Area";
+            this.areaToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.areaToolStripMenuItem.Text = "Parking Area";
             // 
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
@@ -146,7 +148,7 @@
             // 
             this.viewToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
             this.viewToolStripMenuItem.Text = "View";
             this.viewToolStripMenuItem.Click += new System.EventHandler(this.viewToolStripMenuItem_Click);
             // 
@@ -156,14 +158,16 @@
             this.viewToolStripMenuItem1});
             this.feeToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
             this.feeToolStripMenuItem.Name = "feeToolStripMenuItem";
-            this.feeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.feeToolStripMenuItem.Text = "Fee";
+            this.feeToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.feeToolStripMenuItem.Text = "Parking Fee";
             // 
             // viewToolStripMenuItem1
             // 
+            this.viewToolStripMenuItem1.ForeColor = System.Drawing.Color.DimGray;
             this.viewToolStripMenuItem1.Name = "viewToolStripMenuItem1";
-            this.viewToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.viewToolStripMenuItem1.Size = new System.Drawing.Size(99, 22);
             this.viewToolStripMenuItem1.Text = "View";
+            this.viewToolStripMenuItem1.Click += new System.EventHandler(this.viewToolStripMenuItem1_Click);
             // 
             // companyToolStripMenuItem
             // 
@@ -190,6 +194,13 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(692, 26);
             this.panel1.TabIndex = 2;
+            // 
+            // usersClientToolStripMenuItem
+            // 
+            this.usersClientToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
+            this.usersClientToolStripMenuItem.Name = "usersClientToolStripMenuItem";
+            this.usersClientToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.usersClientToolStripMenuItem.Text = "Users Client";
             // 
             // index
             // 
@@ -233,5 +244,6 @@
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem feeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem usersClientToolStripMenuItem;
     }
 }
