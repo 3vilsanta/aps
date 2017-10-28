@@ -130,7 +130,7 @@ namespace eparkmo.admin.employee
                     this.Close();
                 }else
                 {
-                    MessageBox.Show("Email is already taken.", "System Message");    
+                    MessageBox.Show("Email is already taken.", "System Message");
                 }
                 
             }
@@ -147,12 +147,14 @@ namespace eparkmo.admin.employee
             MySqlCommand cmd = new MySqlCommand(qry, con);
             cmd.Parameters.AddWithValue("email", email);
             MySqlDataReader dr = cmd.ExecuteReader();
-            con.Close();
+            
             if (dr.Read())
             {
+                con.Close();
                 return true;
             }else
             {
+                con.Close();
                 return false;
             }
 
