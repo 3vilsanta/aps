@@ -110,28 +110,53 @@ namespace eparkmo.admin.employee
                 string password = txt_password.Text.Trim() ;
                 string area_code = cmb_areacode.Text;
 
-                var client = new RestClient(ENV.SERVER_URL);
-                var request = new RestRequest("new_employee", Method.POST);
-                request.AddParameter("fname", fname); // adds to POST or URL querystring based on Method
-                request.AddParameter("lname", lname);
-                request.AddParameter("gender", gender);
-                request.AddParameter("address", address);
-                request.AddParameter("email", email);
-                request.AddParameter("password", password);
-                request.AddParameter("area_code", area_code);
-                // execute the request
-                IRestResponse response = client.Execute(request);
-                //var content = response.Content; // raw content as string
+                if (!checkEmail(email))
+                { 
+                    var client = new RestClient(ENV.SERVER_URL);
+                    var request = new RestRequest("new_employee", Method.POST);
+                    request.AddParameter("fname", fname); // adds to POST or URL querystring based on Method
+                    request.AddParameter("lname", lname);
+                    request.AddParameter("gender", gender);
+                    request.AddParameter("address", address);
+                    request.AddParameter("email", email);
+                    request.AddParameter("password", password);
+                    request.AddParameter("area_code", area_code);
+                    // execute the request
+                    IRestResponse response = client.Execute(request);
+                    //var content = response.Content; // raw content as string
 
-                //JObject obj = JObject.Parse(content);
-                //Boolean result = Boolean.Parse(obj["error"].ToString());
-
-                this.Close();
+                    //JObject obj = JObject.Parse(content);
+                    //Boolean result = Boolean.Parse(obj["error"].ToString());
+                    this.Close();
+                }else
+                {
+                    MessageBox.Show("Email is already taken.", "System Message");    
+                }
+                
             }
             else
             {
                 MessageBox.Show("All field are required!","System Message");
             }
         }
+
+        private Boolean checkEmail(string email)
+        {
+            string qry = "SELECT * FROM users WHERE email=@email";
+            con.Open();
+            MySqlCommand cmd = new MySqlCommand(qry, con);
+            cmd.Parameters.AddWithValue("email", email);
+            MySqlDataReader dr = cmd.ExecuteReader();
+            con.Close();
+            if (dr.Read())
+            {
+                return true;
+            }else
+            {
+                return false;
+            }
+
+        }
+
     }
 }
