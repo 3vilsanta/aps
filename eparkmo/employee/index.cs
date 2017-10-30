@@ -46,7 +46,7 @@ namespace eparkmo.employee
 
         private void logoutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Hide();
             Form x = new login();
             x.Show();
         }

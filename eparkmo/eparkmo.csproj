@@ -230,7 +230,9 @@
     <None Include="Resources\ic_done_black_24dp.png" />
     <None Include="Resources\ic_account_circle_black_24dp.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="admin\clients\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

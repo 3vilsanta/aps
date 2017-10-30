@@ -42,9 +42,13 @@
             this.feeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.companyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.usersClientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnl_display = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.usersClientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.userslToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.walletRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pendingForApprovalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.historyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -177,6 +181,16 @@
             this.companyToolStripMenuItem.Text = "Company";
             this.companyToolStripMenuItem.Click += new System.EventHandler(this.companyToolStripMenuItem_Click);
             // 
+            // usersClientToolStripMenuItem
+            // 
+            this.usersClientToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.userslToolStripMenuItem,
+            this.walletRequestToolStripMenuItem});
+            this.usersClientToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
+            this.usersClientToolStripMenuItem.Name = "usersClientToolStripMenuItem";
+            this.usersClientToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.usersClientToolStripMenuItem.Text = "Users Client";
+            // 
             // pnl_display
             // 
             this.pnl_display.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -195,12 +209,36 @@
             this.panel1.Size = new System.Drawing.Size(692, 26);
             this.panel1.TabIndex = 2;
             // 
-            // usersClientToolStripMenuItem
+            // userslToolStripMenuItem
             // 
-            this.usersClientToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
-            this.usersClientToolStripMenuItem.Name = "usersClientToolStripMenuItem";
-            this.usersClientToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
-            this.usersClientToolStripMenuItem.Text = "Users Client";
+            this.userslToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
+            this.userslToolStripMenuItem.Name = "userslToolStripMenuItem";
+            this.userslToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.userslToolStripMenuItem.Text = "User\'s ";
+            // 
+            // walletRequestToolStripMenuItem
+            // 
+            this.walletRequestToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pendingForApprovalToolStripMenuItem,
+            this.historyToolStripMenuItem});
+            this.walletRequestToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
+            this.walletRequestToolStripMenuItem.Name = "walletRequestToolStripMenuItem";
+            this.walletRequestToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.walletRequestToolStripMenuItem.Text = "Wallet Request";
+            // 
+            // pendingForApprovalToolStripMenuItem
+            // 
+            this.pendingForApprovalToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
+            this.pendingForApprovalToolStripMenuItem.Name = "pendingForApprovalToolStripMenuItem";
+            this.pendingForApprovalToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.pendingForApprovalToolStripMenuItem.Text = "Pending for approval";
+            // 
+            // historyToolStripMenuItem
+            // 
+            this.historyToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
+            this.historyToolStripMenuItem.Name = "historyToolStripMenuItem";
+            this.historyToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.historyToolStripMenuItem.Text = "History";
             // 
             // index
             // 
@@ -245,5 +283,9 @@
         private System.Windows.Forms.ToolStripMenuItem feeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem usersClientToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem userslToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem walletRequestToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pendingForApprovalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem historyToolStripMenuItem;
     }
 }
