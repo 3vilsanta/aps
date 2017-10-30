@@ -107,5 +107,14 @@ namespace eparkmo.admin
             pnl_display.Controls.Clear();
             pnl_display.Controls.Add(z);
         }
+
+        private void userslToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Text = "User's Client";
+            this.Refresh();
+            var z = new admin.clients.users();
+            pnl_display.Controls.Clear();
+            pnl_display.Controls.Add(z);
+        }
     }
 }

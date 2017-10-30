@@ -8,7 +8,7 @@ namespace eparkmo
 {
     class ENV
     {
-        public static string SERVER_URL= "http://localhost:8000/";
+        public static string SERVER_URL= "http://192.168.43.174:8000/";
         static string _datasource = Properties.Settings.Default.server;
         static string _port = Properties.Settings.Default.port;
         static string _username = Properties.Settings.Default.username;

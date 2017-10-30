@@ -43,12 +43,12 @@
             this.viewToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.companyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.usersClientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pnl_display = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.userslToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.walletRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pendingForApprovalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.historyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pnl_display = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -191,30 +191,13 @@
             this.usersClientToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
             this.usersClientToolStripMenuItem.Text = "Users Client";
             // 
-            // pnl_display
-            // 
-            this.pnl_display.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnl_display.Location = new System.Drawing.Point(0, 90);
-            this.pnl_display.Name = "pnl_display";
-            this.pnl_display.Size = new System.Drawing.Size(692, 415);
-            this.pnl_display.TabIndex = 1;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.menuStrip1);
-            this.panel1.Location = new System.Drawing.Point(0, 64);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(692, 26);
-            this.panel1.TabIndex = 2;
-            // 
             // userslToolStripMenuItem
             // 
             this.userslToolStripMenuItem.ForeColor = System.Drawing.Color.DimGray;
             this.userslToolStripMenuItem.Name = "userslToolStripMenuItem";
             this.userslToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.userslToolStripMenuItem.Text = "User\'s ";
+            this.userslToolStripMenuItem.Click += new System.EventHandler(this.userslToolStripMenuItem_Click);
             // 
             // walletRequestToolStripMenuItem
             // 
@@ -239,6 +222,24 @@
             this.historyToolStripMenuItem.Name = "historyToolStripMenuItem";
             this.historyToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.historyToolStripMenuItem.Text = "History";
+            // 
+            // pnl_display
+            // 
+            this.pnl_display.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnl_display.Location = new System.Drawing.Point(0, 90);
+            this.pnl_display.Name = "pnl_display";
+            this.pnl_display.Size = new System.Drawing.Size(692, 415);
+            this.pnl_display.TabIndex = 1;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.menuStrip1);
+            this.panel1.Location = new System.Drawing.Point(0, 64);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(692, 26);
+            this.panel1.TabIndex = 2;
             // 
             // index
             // 
