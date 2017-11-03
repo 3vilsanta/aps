@@ -45,7 +45,9 @@ namespace eparkmo.admin.clients
             string qry = "SELECT "+
                 "(SELECT UPPER(CONCAT(last_name,', ',first_name,' ',middle_name)) "+
                 "FROM users u WHERE u.id = users_id) as 'Fullname',"+
-                "wallet as 'Available Wallet',vehicle_type as 'Vehicle type',"+
+                "(SELECT u.email " +
+                "FROM users u WHERE u.id = users_id) as 'Email'," +
+                "wallet as 'Available Wallet',vehicle_type as 'Vehicle type'," +
                 "plate_number as 'Plate #' FROM clients";
             con.Open();
             MySqlDataAdapter da = new MySqlDataAdapter(qry, con);

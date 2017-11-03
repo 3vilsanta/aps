@@ -16,6 +16,7 @@ namespace eparkmo
         static string _database = Properties.Settings.Default.database;
         static string _datetime = Properties.Settings.Default.datetime;
 
+
         public string constr =
             "Datasource=" + _datasource + "; " +
             "Port=" + _port + "; " +
