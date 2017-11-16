@@ -9,6 +9,7 @@ namespace eparkmo
     class ENV
     {
         public static string SERVER_URL= "http://eparkmo.herokuapp.com/";
+        public static string TERMS_AND_CONDITION = "http://sample.url/";
         static string _datasource = Properties.Settings.Default.server;
         static string _port = Properties.Settings.Default.port;
         static string _username = Properties.Settings.Default.username;

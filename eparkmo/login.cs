@@ -75,8 +75,16 @@ namespace eparkmo
                         //if user_role is = 1 , means admin
                         //if user_role is = 2 , means employee
 
+                        string company_name = obj["company_name"].ToString();
+                        string company_address = obj["company_address"].ToString();
+
+
                         logged_user.user_id = int.Parse( obj["uid"].ToString());
+                        logged_user.name = obj["user"]["name"].ToString();
                         logged_user.email = obj["user"]["email"].ToString();
+                        logged_user.company_name = company_name;
+                        logged_user.company_address = company_address;
+
 
                         if (user_role == "1")
                         {
@@ -86,6 +94,10 @@ namespace eparkmo
                         }
                         else if (user_role == "2")
                         {
+                            string pl_id = obj["pl_id"].ToString();
+                            logged_user.assigned_parking_id = int.Parse(pl_id);
+
+
                             this.Hide();
                             employee.index i = new employee.index();
                             i.Show();
