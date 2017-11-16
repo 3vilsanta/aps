@@ -56,6 +56,7 @@ namespace eparkmo
                     request.AddParameter("email", email); // adds to POST or URL querystring based on Method
                     request.AddParameter("password", pass);
                     // execute the request
+                    client.Proxy = null;
                     IRestResponse response = client.Execute(request);
                     var content = response.Content; // raw content as string
 
