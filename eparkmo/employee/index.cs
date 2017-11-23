@@ -18,6 +18,9 @@ using Newtonsoft.Json.Linq;
 using System.Printing;
 using PrinterUtility;
 
+using System.IO.Ports;
+using System.Threading;
+
 namespace eparkmo.employee
 {
     public partial class index : MaterialForm
@@ -26,7 +29,8 @@ namespace eparkmo.employee
         private readonly MaterialSkinManager materialSkinManager; 
 
         int testt = 0;
-        string vehicle_type="Motor";
+        string vehicle_type="";
+        string detected_vehicle_type = "";
 
         public index()
         {
@@ -47,9 +51,18 @@ namespace eparkmo.employee
 
         private void index_Load(object sender, EventArgs e)
         {
+            
             displayHistory();
             displayActive();
 
+
+            //connectArduino();
+
+
+            begintoRead();
+
+
+            //serialPort1.Close();
             timer_update.Start();
 
 
@@ -58,10 +71,40 @@ namespace eparkmo.employee
             //    logged_user.company_address
             //    ); 
 
+            //local connetion
+
+            string constrr =
+            "Datasource=localhost; " +
+            "Port=3306; " +
+            "Username=root; " +
+            "Password=; " +
+            "Database=aps_local; ";
+             conn= new MySqlConnection(constrr);
+
+            loadSlot();
         }
 
- 
-        
+        void begintoRead()
+        {
+            serialPort1.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
+            serialPort1.Open();
+        }
+
+        private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
+        {
+
+            SerialPort sp = (SerialPort)sender;
+
+            string w = sp.ReadLine();
+
+            //string msg = sp.ReadExisting();
+            if (w != String.Empty)
+            {
+                detected_vehicle_type = w.Trim();
+                Invoke(new Action(() => txtVehicleType.Text = "Detected: "+ w));
+            } 
+        }
+
         private void changePasswordToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form x = new admin.change_password();
@@ -150,11 +193,183 @@ namespace eparkmo.employee
             
         }
 
+        MySqlConnection conn;
+        int countrr = 0;
+        string o_uid;
+        string o_position;
         private void timer_update_Tick(object sender, EventArgs e)
         {
-            testt++;
-            txtVehicleType.Text = testt + " Detected Vehicle : " + vehicle_type;
+            countrr++;
+            lbl_output.Text = countrr.ToString();
+            string qry = "SELECT * FROM client_requests";
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(qry, conn);
+            MySqlDataReader dr = cmd.ExecuteReader();
+            if (dr.Read())
+            {
+                o_uid = dr.GetString("user_id");
+                o_position = dr.GetString("position");
+                conn.Close();
+
+                conn.Open();
+                cmd = new MySqlCommand("DELETE FROM client_requests", conn);
+                cmd.ExecuteNonQuery();
+                conn.Close();
+
+                if(o_position == "Entrance")
+                {
+                    qry = "SELECT * FROM transactions " +
+                    "WHERE client_id=(SELECT c.id from clients as c where c.users_id=@uid) AND time_in is null";
+                    con.Open();
+                    MySqlCommand ccmd = new MySqlCommand(qry, con);
+                    ccmd.Parameters.AddWithValue("uid", int.Parse(o_uid));
+                    MySqlDataReader ddr = ccmd.ExecuteReader();
+                    if (ddr.Read())
+                    {
+                        int transaction_id = ddr.GetInt16("id");
+                        con.Close();
+
+                        string saveqry = "UPDATE transactions SET time_in=@now " +
+                            "WHERE id=@id";
+                        con.Open();
+                        MySqlCommand saveCmd = new MySqlCommand(saveqry, con);
+                        saveCmd.Parameters.AddWithValue("id", transaction_id);
+                        saveCmd.Parameters.AddWithValue("now", DateTime.Now);
+                        saveCmd.ExecuteNonQuery();
+                        con.Close();
+                        //MessageBox.Show(transaction_id.ToString());
+
+                        //code here to open the gate
+                        displayActive();
+
+                        //vehicle_type
+                        updateSlot("Car", o_position);
+                        MessageBox.Show("New vehicle has been enter.");
+                        
+                        //
+                    }
+                    else
+                    {
+                        con.Close();
+                        MessageBox.Show("UnReserve User is trying to get in.", "System Message");
+                    }
+                }else if (o_position == "Exit")
+                {
+
+                }
+
+                //serialPort1.Open();
+                //serialPort1.Write("1");
+                //serialPort1.Close();
+
+            }
+            else
+            {
+                conn.Close();
+            }
+           
         }
+
+        private void updateSlot(string vehicle,string position)
+        {
+            string qry = "SELECT * FROM parking_lots";
+            con.Open();
+            MySqlCommand cmd = new MySqlCommand(qry, con);
+            MySqlDataReader dr = cmd.ExecuteReader();
+            if (dr.Read())
+            {
+                int c_remaining;
+                int m_remaining;
+
+                c_remaining = dr.GetInt16("car_remaining");
+                m_remaining = dr.GetInt16("motorcycle_remaining");
+
+                con.Close();
+                if(position == "Entrance")
+                {
+                    if (vehicle == "Motor")
+                    {
+                        m_remaining -= 1;
+                    }
+                    else if (vehicle == "Car")
+                    {
+                        c_remaining -= 1;
+                    }
+                }else
+                {
+                    if (vehicle == "Motor")
+                    {
+                        m_remaining += 1;
+                    }
+                    else if (vehicle == "Car")
+                    {
+                        c_remaining += 1;
+                    }
+                }
+                
+
+                //save slot update online
+                string onQry = "update parking_lots set car_remaining=@cr, "+
+                    "motorcycle_remaining=@mr";
+                con.Open();
+                MySqlCommand ucmd = new MySqlCommand(onQry, con);
+                ucmd.Parameters.AddWithValue("cr", c_remaining);
+                ucmd.Parameters.AddWithValue("mr", m_remaining);
+                ucmd.ExecuteNonQuery();
+                con.Close();
+
+
+                //save slot update offline
+                string ofQry = "update slots set car=@cr, " +
+                    "motor=@mr";
+                conn.Open();
+                MySqlCommand uucmd = new MySqlCommand(ofQry, conn);
+                uucmd.Parameters.AddWithValue("cr", c_remaining);
+                uucmd.Parameters.AddWithValue("mr", m_remaining);
+                uucmd.ExecuteNonQuery();
+                conn.Close();
+
+            }
+            else
+            {
+                con.Close();
+            }
+
+
+        }
+
+        private void loadSlot()
+        {
+            string qry = "SELECT * FROM parking_lots";
+            con.Open();
+            MySqlCommand cmd = new MySqlCommand(qry, con);
+            MySqlDataReader dr = cmd.ExecuteReader();
+            if (dr.Read())
+            {
+                int c_remaining;
+                int m_remaining;
+                c_remaining = dr.GetInt16("car_remaining");
+                m_remaining = dr.GetInt16("motorcycle_remaining");
+                con.Close();
+
+                // MessageBox.Show(c_remaining + " , " + m_remaining);
+                //
+                conn.Open();
+                string savetoof = "INSERT INTO slots(car,motor) " +
+                    "VALUES(@car,@motor)";
+                MySqlCommand cmdd = new MySqlCommand(savetoof, conn);
+                cmdd.Parameters.AddWithValue("@motor", m_remaining);
+                cmdd.Parameters.AddWithValue("@car", c_remaining); 
+                cmdd.ExecuteNonQuery();
+                conn.Close();
+                //
+            }
+            else
+            {
+                con.Close();
+            }
+        }
+ 
 
         private void lblRefreshActive_Click(object sender, EventArgs e)
         {
@@ -179,82 +394,58 @@ namespace eparkmo.employee
         private void btnEnter_Click(object sender, EventArgs e)
         {
             string plate_no = txtPlateNumber.Text.Trim();
-
-            string qry = "SELECT * FROM transactions "+
-                "WHERE plate_number = @pn AND time_out is null";
-            con.Open();
-            MySqlCommand cmd = new MySqlCommand(qry, con);
-            cmd.Parameters.AddWithValue("pn", plate_no);
-            MySqlDataReader dr = cmd.ExecuteReader();
-            if (dr.Read())
+            if (plate_no != "")
             {
-                con.Close();
-                MessageBox.Show("Vehicle with this Plate # was already inside.","Message");
-            }else {
-                con.Close();
-
-                DialogResult drr = MessageBox.Show("Do you want to continue?", "Confirmation", MessageBoxButtons.YesNo);
-                if (drr == DialogResult.Yes)
+                if (vehicle_type == "" || vehicle_type == "None")
                 {
-                    saveNewEntry(plate_no);
-                    displayActive();
+                    MessageBox.Show("No vehicle detected.", "Message");
                 }
+                else
+                {
+                    string qry = "SELECT * FROM transactions " +
+                        "WHERE plate_number = @pn AND time_out is null";
+                    con.Open();
+                    MySqlCommand cmd = new MySqlCommand(qry, con);
+                    cmd.Parameters.AddWithValue("pn", plate_no);
+                    MySqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        con.Close();
+                        MessageBox.Show("Vehicle with this Plate # was already inside.", "Message");
 
+                    }
+                    else
+                    {
+                        con.Close();
+
+                        DialogResult drr = MessageBox.Show("Do you want to continue?", "Confirmation", MessageBoxButtons.YesNo);
+                        if (drr == DialogResult.Yes)
+                        {
+                            vehicle_type = detected_vehicle_type;
+                            saveNewEntry(plate_no);
+                            //
+                            serialPort1.Write("1");
+
+                            //
+                            displayActive();
+                        }
+                    }
+                }
             }
 
-
-
-            //String company_name = "Filinvest";
-            //String company_address = "Northgate Cyberzone,";
-            //String transaction_id = "0001";
-            //String plate_number = "AC201";
-            //String vehicle_type = "CAR";
-            //DateTime time_in = DateTime.Now;
-            //DateTime time_out = DateTime.Now; 
-            //Double cost = 40, cash = 50, change = 10;
-            //String employee_name ="David Gualvez", tc_link = "http://eparkmo.herokuapp.com/termsandcondition";
-            //displaToPrinter(company_name, company_address, transaction_id,
-            //    plate_number, vehicle_type, time_in, time_out, cost, cash, change, employee_name,
-            //    tc_link);
         }
 
         private void saveNewEntry(string plate_no)
         {
             try
             {
-                //MessageBox.Show(logged_user.user_id.ToString());
-                //var client = new RestClient(ENV.SERVER_URL);
-                //var request = new RestRequest("new_offline_reservation", Method.POST);
-                //request.AddParameter("users_id", logged_user.user_id); // adds to POST or URL querystring based on Method
-                //request.AddParameter("plate_no", plate_no);
-                //request.AddParameter("vehicle_type", vehicle_type);
-                //// execute the request
-                //client.Proxy = null;
-                //IRestResponse response = client.Execute(request);
-                //var content = response.Content; // raw content as string
-
-
-                //
-                //$emp = Employee::where('users_id',$request->users_id)->first();
-                //$pl = ParkingLot::where('area_code',$emp->assigned_area_code)->first();
-
-                ////saving
-                //$t = new Transaction;
-                //$t->employee_id = $emp->id;
-                //$t->parking_lot_id = $pl->id;
-                //$t->plate_number = $request->plate_no;
-                //$t->vehicle_type = $request->vehicle_type;
-                //$t->time_in = Carbon::now();
-                //$t->trans_type = "Offline";
-                //$t->save();
-                //
-
                 DateTime ti = DateTime.Now;
                 DateTime to = DateTime.MinValue;
-                string qry = "INSERT INTO transactions(employee_id,parking_lot_id,"+
-                    "plate_number,vehicle_type,time_in,trans_type) "+
-                    "VALUES((SELECT id FROM employees WHERE users_id=@users_id),"+
-                    "(SELECT id FROM parking_lots WHERE area_code=(SELECT assigned_area_code FROM employees WHERE users_id=@users_id)),"+
+
+                string qry = "INSERT INTO transactions(employee_id,parking_lot_id," +
+                    "plate_number,vehicle_type,time_in,trans_type) " +
+                    "VALUES((SELECT id FROM employees WHERE users_id=@users_id)," +
+                    "(SELECT id FROM parking_lots WHERE area_code=(SELECT assigned_area_code FROM employees WHERE users_id=@users_id))," +
                     "@pn,@vt,@ti,'Offline')";
                 con.Open();
                 MySqlCommand cmd = new MySqlCommand(qry, con);
@@ -294,6 +485,7 @@ namespace eparkmo.employee
             txtPlateNumber.SelectionStart = txtPlateNumber.Text.Length;
         }
 
+        string textToPrint = "";
         private void printMe(
             string company_name,
             string company_address,
@@ -308,118 +500,155 @@ namespace eparkmo.employee
             string employee_name,
             string tc_link)
         {
-            PrinterUtility.EscPosEpsonCommands.EscPosEpson obj = new PrinterUtility.EscPosEpsonCommands.EscPosEpson();
-
-            byte[] bytesValue = { };
-            bytesValue = PrintExtensions.AddBytes(bytesValue, obj.Separator());
-            bytesValue = PrintExtensions.AddBytes(bytesValue, obj.CharSize.DoubleWidth6());
-            bytesValue = PrintExtensions.AddBytes(bytesValue, obj.FontSelect.FontA());
-            bytesValue = PrintExtensions.AddBytes(bytesValue, obj.Alignment.Center());
-            bytesValue = PrintExtensions.AddBytes(bytesValue, Encoding.ASCII.GetBytes("Hello World\n"));
-            bytesValue = PrintExtensions.AddBytes(bytesValue, obj.Separator());
-            bytesValue = PrintExtensions.AddBytes(bytesValue, cutpage());
-
-            PrinterUtility.PrintExtensions.Print(bytesValue, "\\\\DAVID\\pos");
-
-            ////printer setup
-            //string printer_name = "pos";
-            //printDocument1.PrinterSettings.PrinterName = printer_name;
-            //string textToPrint = "";
+            //printer setup
+            string printer_name = "pos";
+            printDocument1.PrinterSettings.PrinterName = printer_name;
 
 
-            //double len;
-            //string spclen;
-            //string x;
+            double len;
+            string spclen;
+            string x;
+            char xx = ' ';
 
-            ////headers 
-            ////Dim StringToPrint As String = "David"
-            ////Dim LineLen As Integer = StringToPrint.Length
-            ////Dim spcLen1 As New String(" "c, Math.Round((33 - LineLen) / 2)) 'This line is used to center text in the middle of the receipt
-            ////TextToPrint &= spcLen1 & StringToPrint & Environment.NewLine
-            //x = company_name;
-            //len = x.Length;
-            //char xx = ' ';
-            //spclen = new string(xx, int.Parse( Math.Round((33 - len) / 2).ToString()));
-            //textToPrint += spclen + x + Environment.NewLine;
-
-            ////body
+            //headers     
+            x = logged_user.company_name;
+            len = x.Length;
+            spclen = new string(xx, int.Parse(Math.Round((45 - len) / 2).ToString())); 
+            c_name += spclen +  x + Environment.NewLine;
 
 
-            ////footer
+            x = logged_user.company_address;
+            len = x.Length;
+            spclen = new string(xx, int.Parse(Math.Round((45 - len) / 2).ToString()));
+            //c_address += spclen + x + Environment.NewLine;
+            c_address = x + Environment.NewLine;
 
 
-            ////printing
-            ////Dim printControl = New Printing.StandardPrintController
-            ////PrintDocument1.PrintController = printControl
-            ////Try
-            ////    PrintDocument1.Print()
-            ////Catch ex As Exception
-            ////    MsgBox(ex.Message)
-            ////End Try
+            //body 
+            textToPrint = "--------------------------------" + Environment.NewLine;
 
+            //
+            x = "Plate # : " + plate_no;
+            textToPrint +=  Environment.NewLine;
+            //
 
-            //try
-            //{
-            //    printDocument1.Print();
-            //}
-            //catch(Exception e)
-            //{
-            //    MessageBox.Show(e.Message);
-            //}
+            textToPrint += "Vehicle Type : " + vehicle_type + Environment.NewLine;
 
+            textToPrint += "Time IN : " + time_in.ToString() + Environment.NewLine;
 
+            textToPrint += "Time OUT : " + time_out + Environment.NewLine;
+
+            textToPrint += "Fee : " + fee.ToString("N2") + Environment.NewLine;
+
+            textToPrint += "Cash : " + cash.ToString("N2") + Environment.NewLine;
+
+            textToPrint += "Change : " + change.ToString("N2")  + Environment.NewLine;
+
+            //footer  
+            textToPrint += "--------------------------------" + Environment.NewLine;
+            textToPrint += "Employee : " + logged_user.name + Environment.NewLine;
+            textToPrint += "Terms & Condition" + Environment.NewLine;
+            textToPrint += ENV.TERMS_AND_CONDITION + Environment.NewLine;
+            textToPrint += " " + Environment.NewLine;
+            textToPrint += " " + Environment.NewLine;
+            textToPrint += "." + Environment.NewLine;
+
+            //printing 
+            try
+            {
+                //printDocument1.Print();
+                //printPreviewControl1.Document.Dispose();
+                printPreviewControl1.Document = printDocument1;
+                printPreviewControl1.Zoom = 1;
+                printPreviewControl1.Show();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
-        public byte[] cutpage()
-        {
-            List<byte> oby = new List<byte>();
-            oby.Add(Convert.ToByte(Convert.ToChar(0x1D)));
-            oby.Add(Convert.ToByte("V"));
-            oby.Add((byte)66);
-            oby.Add((byte)3);
-            return oby.ToArray();
-        }
 
-        static int currentChar;
+        string c_name, c_address;
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            //Static currentChar As Integer
+           // e.Graphics.Clear(Color.White);
+
+            e.Graphics.DrawString(c_name, new Font("Arial",8, FontStyle.Regular)
+                , Brushes.Black, new Point(0,0));
+            e.Graphics.DrawString(c_address, new Font("Arial", 8, FontStyle.Regular)
+                , Brushes.Black, new Point(0, 10));
+            e.Graphics.DrawString(textToPrint, new Font("Arial", 8, FontStyle.Regular)
+               , Brushes.Black, new Point(0, 18)); 
+        }
+          
+        private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            //SerialPort sp = (SerialPort)sender;
+            //string indata = sp.ReadExisting();
+            //vehicle_type = sp.ReadExisting();
+        }
+
+        private void timeOutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach(DataGridViewRow row in dgv_active.SelectedRows)
+            {
+                string id = row.Cells[0].Value.ToString();
 
 
-            //Dim textfont As Font = New Font("Courier New", 10, FontStyle.Bold)
-            Font textfont = new Font("Courier New", 10, FontStyle.Bold);
+                var form = new time_out();
+                form.id = id;
+                form.ShowDialog();
 
-            //Dim h, w As Integer
-            int h, w;
-            //Dim left, top As Integer
-            int left, top;
+                displayActive();
+                displayHistory();
 
-            //With PrintDocument1.DefaultPageSettings
-            //    h = 0
-            //    w = 0
-            //    left = 0
-            //    top = 0
-            //End With 
+                string qry = "select * from transactions where id=" + id;
+                con.Open();
+                MySqlDataAdapter da = new MySqlDataAdapter(qry, con);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                con.Close();
+
+                printMe(
+                    logged_user.company_name,
+                    logged_user.company_address,
+                    dt.Rows[0].Field<string>("plate_number"),
+                    dt.Rows[0].Field<string>("vehicle_type"),
+                    dt.Rows[0].Field<DateTime>("time_in"),
+                    dt.Rows[0].Field<DateTime>("time_out"),
+                    dt.Rows[0].Field<double>("parking_fee"),
+                    dt.Rows[0].Field<double>("paid_amount"),
+                    dt.Rows[0].Field<double>("paid_change"),
+                    "Offline",
+                    logged_user.name,
+                    ENV.TERMS_AND_CONDITION
+                    );
+            }
+        }
 
 
-            //Dim lines As Integer = CInt(Math.Round(h / 1))
-            //Dim b As New Rectangle(left, top, w, h)
-            //Dim format As StringFormat
-            //format = New StringFormat(StringFormatFlags.LineLimit)
-            //Dim line, chars As Integer
+        public void connectArduino()
+        {
+            serialPort1.Close();
 
+            serialPort1.PortName = "COM10";
 
-            //e.Graphics.MeasureString(Mid(TextToPrint, currentChar + 1), textfont, New SizeF(w, h), format, chars, line)
-            //e.Graphics.DrawString(TextToPrint.Substring(currentChar, chars), New Font("Courier New", 10, FontStyle.Bold), Brushes.Black, b, format)
+            serialPort1.BaudRate = 9600;
 
+            serialPort1.DataBits = 8;
 
-            //currentChar = currentChar + chars
-            //If currentChar < TextToPrint.Length Then
-            //    e.HasMorePages = True
-            //Else
-            //    e.HasMorePages = False
-            //    currentChar = 0
-            //End If
+            serialPort1.Parity = Parity.None;
+
+            serialPort1.StopBits = StopBits.One;
+
+            serialPort1.Handshake = Handshake.None;
+
+            serialPort1.Encoding = System.Text.Encoding.Default;
+
+            serialPort1.ReadTimeout = 10000;
+
+            serialPort1.Open();
         }
     }
 }

@@ -142,6 +142,12 @@
     <Compile Include="employee\index.Designer.cs">
       <DependentUpon>index.cs</DependentUpon>
     </Compile>
+    <Compile Include="employee\time_out.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="employee\time_out.Designer.cs">
+      <DependentUpon>time_out.cs</DependentUpon>
+    </Compile>
     <Compile Include="ENV.cs" />
     <Compile Include="forgot password\newPassword.cs">
       <SubType>Form</SubType>
@@ -196,6 +202,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="employee\index.resx">
       <DependentUpon>index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="employee\time_out.resx">
+      <DependentUpon>time_out.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forgot password\newPassword.resx">
       <DependentUpon>newPassword.cs</DependentUpon>
