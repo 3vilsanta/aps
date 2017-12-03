@@ -199,8 +199,11 @@ namespace eparkmo.employee
         string o_position;
         private void timer_update_Tick(object sender, EventArgs e)
         {
-            countrr++;
-            lbl_output.Text = countrr.ToString();
+            //countrr++;
+            //lbl_output.Text = countrr.ToString();
+
+            displayAvailableSlot();
+
             string qry = "SELECT * FROM client_requests";
             conn.Open();
             MySqlCommand cmd = new MySqlCommand(qry, conn);
@@ -252,9 +255,67 @@ namespace eparkmo.employee
                     {
                         con.Close();
                         MessageBox.Show("UnReserve User is trying to get in.", "System Message");
+
                     }
                 }else if (o_position == "Exit")
                 {
+                    //check and get users information
+                    //validate
+                    //compute fees
+                    //deduct to wallet
+                    //update the transaction set to finish
+                    //open the gate
+                    //let the user exit
+
+                    qry = "SELECT * FROM transactions " +
+                    "WHERE client_id=(SELECT c.id from clients as c where c.users_id=@uid) AND time_in is null";
+                    con.Open();
+                    MySqlCommand ccmd = new MySqlCommand(qry, con);
+                    ccmd.Parameters.AddWithValue("uid", int.Parse(o_uid));
+                    MySqlDataReader ddr = ccmd.ExecuteReader();
+                    if (ddr.Read())
+                    {
+                        int transaction_id = ddr.GetInt16("id");
+                        con.Close();
+
+                        //get wallet of user
+                        string uQry = "SELECT * FROM clients where users_id="+o_uid;
+                        con.Open();
+                        MySqlDataAdapter uda = new MySqlDataAdapter(uQry, con);
+                        DataTable udt = new DataTable();
+                        uda.Fill(udt);
+                        con.Close();
+                        //get wallet
+                        double uwallet = udt.Rows[0].Field<double>("wallet");
+                        
+
+
+                        //string saveqry = "UPDATE transactions SET time_in=@now " +
+                        //    "WHERE id=@id";
+                        //con.Open();
+                        //MySqlCommand saveCmd = new MySqlCommand(saveqry, con);
+                        //saveCmd.Parameters.AddWithValue("id", transaction_id);
+                        //saveCmd.Parameters.AddWithValue("now", DateTime.Now);
+                        //saveCmd.ExecuteNonQuery();
+                        //con.Close();
+                        ////MessageBox.Show(transaction_id.ToString());
+
+                        ////code here to open the gate
+                        //displayActive();
+
+                        ////vehicle_type
+                        //updateSlot("Car", o_position);
+                        //MessageBox.Show("New vehicle has been enter.");
+                        //
+                    }
+                    else
+                    {
+                        con.Close();
+                        MessageBox.Show("Unverefied User is trying to get out.", "System Message");
+
+                    }
+
+
 
                 }
 
@@ -271,7 +332,7 @@ namespace eparkmo.employee
         }
 
         private void updateSlot(string vehicle,string position)
-        {
+        { 
             string qry = "SELECT * FROM parking_lots";
             con.Open();
             MySqlCommand cmd = new MySqlCommand(qry, con);
@@ -340,6 +401,12 @@ namespace eparkmo.employee
 
         private void loadSlot()
         {
+            string delqry = "delete from slots";
+            conn.Open();
+            MySqlCommand delcmd = new MySqlCommand(delqry, conn);
+            delcmd.ExecuteNonQuery();
+            conn.Close();
+
             string qry = "SELECT * FROM parking_lots";
             con.Open();
             MySqlCommand cmd = new MySqlCommand(qry, con);
@@ -396,7 +463,7 @@ namespace eparkmo.employee
             string plate_no = txtPlateNumber.Text.Trim();
             if (plate_no != "")
             {
-                if (vehicle_type == "" || vehicle_type == "None")
+                if (detected_vehicle_type == "" || detected_vehicle_type == "None")
                 {
                     MessageBox.Show("No vehicle detected.", "Message");
                 }
@@ -423,11 +490,14 @@ namespace eparkmo.employee
                         {
                             vehicle_type = detected_vehicle_type;
                             saveNewEntry(plate_no);
+                            updateSlot(vehicle_type, "Entrance");
                             //
                             serialPort1.Write("1");
 
                             //
                             displayActive();
+                            txtPlateNumber.Text = "";
+                            txtPlateNumber.Focus();
                         }
                     }
                 }
@@ -510,25 +580,30 @@ namespace eparkmo.employee
             string x;
             char xx = ' ';
 
-            //headers     
-            x = logged_user.company_name;
-            len = x.Length;
-            spclen = new string(xx, int.Parse(Math.Round((45 - len) / 2).ToString())); 
-            c_name += spclen +  x + Environment.NewLine;
+            ////headers     
+            //x = logged_user.company_name;
+            //len = x.Length;
+            //spclen = new string(xx, int.Parse(Math.Round((45 - len) / 2).ToString())); 
+            //c_name += spclen +  x + Environment.NewLine;
 
 
-            x = logged_user.company_address;
-            len = x.Length;
-            spclen = new string(xx, int.Parse(Math.Round((45 - len) / 2).ToString()));
-            //c_address += spclen + x + Environment.NewLine;
-            c_address = x + Environment.NewLine;
+            //x = logged_user.company_address;
+            //len = x.Length;
+            //spclen = new string(xx, int.Parse(Math.Round((45 - len) / 2).ToString()));
+            ////c_address += spclen + x + Environment.NewLine;
+            //c_address = x + Environment.NewLine;
 
 
             //body 
-            textToPrint = "--------------------------------" + Environment.NewLine;
+            textToPrint = "Northgate Cyberzone Alabang" + Environment.NewLine;
+            textToPrint += "Muntinlupa City" + Environment.NewLine;
+            textToPrint += "VAT TIN#: 400-741-333-001" + Environment.NewLine;
+            textToPrint += "--------------------------------" + Environment.NewLine;
 
             //
-            x = "Plate # : " + plate_no;
+
+
+            textToPrint += "Plate # : " + plate_no;
             textToPrint +=  Environment.NewLine;
             //
 
@@ -546,7 +621,7 @@ namespace eparkmo.employee
 
             //footer  
             textToPrint += "--------------------------------" + Environment.NewLine;
-            textToPrint += "Employee : " + logged_user.name + Environment.NewLine;
+            textToPrint += "Teller : " + logged_user.name + Environment.NewLine;
             textToPrint += "Terms & Condition" + Environment.NewLine;
             textToPrint += ENV.TERMS_AND_CONDITION + Environment.NewLine;
             textToPrint += " " + Environment.NewLine;
@@ -556,11 +631,11 @@ namespace eparkmo.employee
             //printing 
             try
             {
-                //printDocument1.Print();
+                printDocument1.Print();
                 //printPreviewControl1.Document.Dispose();
-                printPreviewControl1.Document = printDocument1;
-                printPreviewControl1.Zoom = 1;
-                printPreviewControl1.Show();
+               // printPreviewControl1.Document = printDocument1;
+                //printPreviewControl1.Zoom = 1;
+                //printPreviewControl1.Show();
             }
             catch (Exception e)
             {
@@ -603,27 +678,48 @@ namespace eparkmo.employee
                 displayActive();
                 displayHistory();
 
-                string qry = "select * from transactions where id=" + id;
+                string qry = "select * from transactions where id=@id and time_in is not null and time_out is not null";
                 con.Open();
-                MySqlDataAdapter da = new MySqlDataAdapter(qry, con);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                con.Close();
-
-                printMe(
+                MySqlCommand cmd = new MySqlCommand(qry, con);
+                cmd.Parameters.AddWithValue("id", int.Parse(id));
+                MySqlDataReader dr = cmd.ExecuteReader();
+                if (dr.Read())
+                {
+                    string vtype = dr.GetString("vehicle_type");
+                    printMe(
                     logged_user.company_name,
                     logged_user.company_address,
-                    dt.Rows[0].Field<string>("plate_number"),
-                    dt.Rows[0].Field<string>("vehicle_type"),
-                    dt.Rows[0].Field<DateTime>("time_in"),
-                    dt.Rows[0].Field<DateTime>("time_out"),
-                    dt.Rows[0].Field<double>("parking_fee"),
-                    dt.Rows[0].Field<double>("paid_amount"),
-                    dt.Rows[0].Field<double>("paid_change"),
+                    dr.GetString("plate_number"),
+                    vtype,
+                    dr.GetDateTime("time_in") ,
+                    dr.GetDateTime("time_out") ,
+                    dr.GetDouble("parking_fee") ,
+                    dr.GetDouble("paid_amount") ,
+                    dr.GetDouble("paid_change") ,
                     "Offline",
                     logged_user.name,
                     ENV.TERMS_AND_CONDITION
                     );
+                    con.Close();
+                    //code here to open the gate
+                    updateSlot(vtype, "Exit");
+                    //
+                    serialPort1.Write("2");
+
+                    //
+                }
+                else
+                {
+                    con.Close();
+                }
+                //con.Open();
+                //MySqlDataAdapter da = new MySqlDataAdapter(qry, con);
+                //da.SelectCommand.Parameters.AddWithValue("id", int.Parse(id));
+                //DataTable dt = new DataTable();
+                //da.Fill(dt);
+                //con.Close();
+
+               
             }
         }
 
@@ -649,6 +745,25 @@ namespace eparkmo.employee
             serialPort1.ReadTimeout = 10000;
 
             serialPort1.Open();
+        }
+
+
+        private void displayAvailableSlot()
+        {
+            string qry = "select * from slots";
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(qry, conn);
+            MySqlDataReader dr = cmd.ExecuteReader();
+            if (dr.Read())
+            {
+                lblMotorSlot.Text = "Available Motor : " +  dr.GetString("motor");
+                lblCarSlot.Text = "Available Car : " + dr.GetString("car");
+                conn.Close();
+            }
+            else
+            {
+                conn.Close();
+            }
         }
     }
 }
