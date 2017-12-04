@@ -116,5 +116,14 @@ namespace eparkmo.admin
             pnl_display.Controls.Clear();
             pnl_display.Controls.Add(z);
         }
+
+        private void pendingForApprovalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Text = "Wallet Request";
+            this.Refresh();
+            var z = new admin.wallet_request.pending();
+            pnl_display.Controls.Clear();
+            pnl_display.Controls.Add(z);
+        }
     }
 }

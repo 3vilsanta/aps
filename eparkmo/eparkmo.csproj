@@ -140,11 +140,23 @@
     <Compile Include="admin\parking\viewParkingFee.Designer.cs">
       <DependentUpon>viewParkingFee.cs</DependentUpon>
     </Compile>
+    <Compile Include="admin\wallet_request\pending.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="admin\wallet_request\pending.Designer.cs">
+      <DependentUpon>pending.cs</DependentUpon>
+    </Compile>
     <Compile Include="employee\index.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="employee\index.Designer.cs">
       <DependentUpon>index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="employee\set_penalty.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="employee\set_penalty.Designer.cs">
+      <DependentUpon>set_penalty.cs</DependentUpon>
     </Compile>
     <Compile Include="employee\time_out.cs">
       <SubType>Form</SubType>
@@ -204,8 +216,14 @@
     <EmbeddedResource Include="admin\parking\viewParkingFee.resx">
       <DependentUpon>viewParkingFee.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="admin\wallet_request\pending.resx">
+      <DependentUpon>pending.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="employee\index.resx">
       <DependentUpon>index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="employee\set_penalty.resx">
+      <DependentUpon>set_penalty.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="employee\time_out.resx">
       <DependentUpon>time_out.cs</DependentUpon>

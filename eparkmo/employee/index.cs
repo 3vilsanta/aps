@@ -747,6 +747,30 @@ namespace eparkmo.employee
             serialPort1.Open();
         }
 
+        private void setAPenaltyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dgv_active.SelectedRows)
+            {
+                string id = row.Cells[0].Value.ToString();
+                string check = "SELECT * FROM penalty WHERE transactions_id=" + id;
+                con.Open();
+                MySqlCommand cmd = new MySqlCommand(check, con);
+                MySqlDataReader dr = cmd.ExecuteReader();
+                if (dr.Read())
+                {
+                    con.Close();
+                    MessageBox.Show("You have already set a Penalty for this Transaction");
+                }else
+                {
+                    con.Close();
+                    var x = new employee.set_penalty();
+                    x.transaction_id = id;
+                    x.ShowDialog();
+                    
+                }
+              
+            }
+        }
 
         private void displayAvailableSlot()
         {

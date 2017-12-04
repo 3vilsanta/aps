@@ -215,6 +215,7 @@
             this.pendingForApprovalToolStripMenuItem.Name = "pendingForApprovalToolStripMenuItem";
             this.pendingForApprovalToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.pendingForApprovalToolStripMenuItem.Text = "Pending for approval";
+            this.pendingForApprovalToolStripMenuItem.Click += new System.EventHandler(this.pendingForApprovalToolStripMenuItem_Click);
             // 
             // historyToolStripMenuItem
             // 
