@@ -158,6 +158,12 @@
     <Compile Include="employee\set_penalty.Designer.cs">
       <DependentUpon>set_penalty.cs</DependentUpon>
     </Compile>
+    <Compile Include="employee\super\request.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="employee\super\request.Designer.cs">
+      <DependentUpon>request.cs</DependentUpon>
+    </Compile>
     <Compile Include="employee\time_out.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -224,6 +230,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="employee\set_penalty.resx">
       <DependentUpon>set_penalty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="employee\super\request.resx">
+      <DependentUpon>request.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="employee\time_out.resx">
       <DependentUpon>time_out.cs</DependentUpon>

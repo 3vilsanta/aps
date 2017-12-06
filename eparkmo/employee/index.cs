@@ -19,7 +19,6 @@ using System.Printing;
 using PrinterUtility;
 
 using System.IO.Ports;
-using System.Threading;
 
 namespace eparkmo.employee
 {
@@ -201,9 +200,7 @@ namespace eparkmo.employee
         {
             //countrr++;
             //lbl_output.Text = countrr.ToString();
-
-            displayAvailableSlot();
-
+            
             string qry = "SELECT * FROM client_requests";
             conn.Open();
             MySqlCommand cmd = new MySqlCommand(qry, conn);
@@ -460,6 +457,7 @@ namespace eparkmo.employee
 
         private void btnEnter_Click(object sender, EventArgs e)
         {
+            string tempVT = detected_vehicle_type;
             string plate_no = txtPlateNumber.Text.Trim();
             if (plate_no != "")
             {
@@ -488,12 +486,11 @@ namespace eparkmo.employee
                         DialogResult drr = MessageBox.Show("Do you want to continue?", "Confirmation", MessageBoxButtons.YesNo);
                         if (drr == DialogResult.Yes)
                         {
-                            vehicle_type = detected_vehicle_type;
+                            vehicle_type = tempVT;
                             saveNewEntry(plate_no);
                             updateSlot(vehicle_type, "Entrance");
                             //
                             serialPort1.Write("1");
-
                             //
                             displayActive();
                             txtPlateNumber.Text = "";
@@ -571,7 +568,7 @@ namespace eparkmo.employee
             string tc_link)
         {
             //printer setup
-            string printer_name = "pos";
+            string printer_name = "pos2";
             printDocument1.PrinterSettings.PrinterName = printer_name;
 
 
@@ -747,6 +744,19 @@ namespace eparkmo.employee
             serialPort1.Open();
         }
 
+        private void printToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void exitRequestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            serialPort1.Close();
+            var x = new employee.super.request();
+            x.ShowDialog();
+            serialPort1.Open();
+        }
+
         private void setAPenaltyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in dgv_active.SelectedRows)
@@ -772,22 +782,6 @@ namespace eparkmo.employee
             }
         }
 
-        private void displayAvailableSlot()
-        {
-            string qry = "select * from slots";
-            conn.Open();
-            MySqlCommand cmd = new MySqlCommand(qry, conn);
-            MySqlDataReader dr = cmd.ExecuteReader();
-            if (dr.Read())
-            {
-                lblMotorSlot.Text = "Available Motor : " +  dr.GetString("motor");
-                lblCarSlot.Text = "Available Car : " + dr.GetString("car");
-                conn.Close();
-            }
-            else
-            {
-                conn.Close();
-            }
-        }
+       
     }
 }

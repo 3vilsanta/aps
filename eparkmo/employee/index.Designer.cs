@@ -42,6 +42,8 @@
             this.aboutMeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changePasswordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.superToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlContainer = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lblRefreshHistory = new System.Windows.Forms.Label();
@@ -58,16 +60,13 @@
             this.materialContextMenuStrip1 = new MaterialSkin.Controls.MaterialContextMenuStrip();
             this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timeOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setAPenaltyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label3 = new System.Windows.Forms.Label();
             this.timer_update = new System.Windows.Forms.Timer(this.components);
             this.txtVehicleType = new System.Windows.Forms.TextBox();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.printPreviewDialog1 = new System.Windows.Forms.PrintPreviewDialog();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
-            this.lbl_output = new System.Windows.Forms.Label();
-            this.lblMotorSlot = new System.Windows.Forms.Label();
-            this.lblCarSlot = new System.Windows.Forms.Label();
-            this.setAPenaltyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.pnlContainer.SuspendLayout();
@@ -95,7 +94,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.accountToolStripMenuItem});
+            this.accountToolStripMenuItem,
+            this.superToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -136,6 +136,21 @@
             this.logoutToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.logoutToolStripMenuItem.Text = "Logout";
             this.logoutToolStripMenuItem.Click += new System.EventHandler(this.logoutToolStripMenuItem_Click);
+            // 
+            // superToolStripMenuItem
+            // 
+            this.superToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exitRequestToolStripMenuItem});
+            this.superToolStripMenuItem.Name = "superToolStripMenuItem";
+            this.superToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
+            this.superToolStripMenuItem.Text = "Super";
+            // 
+            // exitRequestToolStripMenuItem
+            // 
+            this.exitRequestToolStripMenuItem.Name = "exitRequestToolStripMenuItem";
+            this.exitRequestToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.exitRequestToolStripMenuItem.Text = "Make a Request";
+            this.exitRequestToolStripMenuItem.Click += new System.EventHandler(this.exitRequestToolStripMenuItem_Click);
             // 
             // pnlContainer
             // 
@@ -381,20 +396,28 @@
             this.setAPenaltyToolStripMenuItem});
             this.materialContextMenuStrip1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialContextMenuStrip1.Name = "materialContextMenuStrip1";
-            this.materialContextMenuStrip1.Size = new System.Drawing.Size(153, 92);
+            this.materialContextMenuStrip1.Size = new System.Drawing.Size(142, 70);
             // 
             // printToolStripMenuItem
             // 
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
-            this.printToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.printToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.printToolStripMenuItem.Text = "Print";
+            this.printToolStripMenuItem.Click += new System.EventHandler(this.printToolStripMenuItem_Click);
             // 
             // timeOutToolStripMenuItem
             // 
             this.timeOutToolStripMenuItem.Name = "timeOutToolStripMenuItem";
-            this.timeOutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.timeOutToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.timeOutToolStripMenuItem.Text = "Time Out";
             this.timeOutToolStripMenuItem.Click += new System.EventHandler(this.timeOutToolStripMenuItem_Click);
+            // 
+            // setAPenaltyToolStripMenuItem
+            // 
+            this.setAPenaltyToolStripMenuItem.Name = "setAPenaltyToolStripMenuItem";
+            this.setAPenaltyToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.setAPenaltyToolStripMenuItem.Text = "Set a Penalty";
+            this.setAPenaltyToolStripMenuItem.Click += new System.EventHandler(this.setAPenaltyToolStripMenuItem_Click);
             // 
             // label3
             // 
@@ -412,7 +435,7 @@
             // txtVehicleType
             // 
             this.txtVehicleType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtVehicleType.BackColor = System.Drawing.Color.DarkSlateGray;
+            this.txtVehicleType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(71)))), ((int)(((byte)(79)))));
             this.txtVehicleType.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtVehicleType.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtVehicleType.ForeColor = System.Drawing.Color.White;
@@ -439,52 +462,14 @@
             // 
             // serialPort1
             // 
-            this.serialPort1.PortName = "COM10";
+            this.serialPort1.PortName = "COM8";
             this.serialPort1.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort1_DataReceived);
-            // 
-            // lbl_output
-            // 
-            this.lbl_output.AutoSize = true;
-            this.lbl_output.Location = new System.Drawing.Point(382, 38);
-            this.lbl_output.Name = "lbl_output";
-            this.lbl_output.Size = new System.Drawing.Size(35, 13);
-            this.lbl_output.TabIndex = 6;
-            this.lbl_output.Text = "label5";
-            this.lbl_output.Visible = false;
-            // 
-            // lblMotorSlot
-            // 
-            this.lblMotorSlot.AutoSize = true;
-            this.lblMotorSlot.Location = new System.Drawing.Point(106, 29);
-            this.lblMotorSlot.Name = "lblMotorSlot";
-            this.lblMotorSlot.Size = new System.Drawing.Size(23, 13);
-            this.lblMotorSlot.TabIndex = 7;
-            this.lblMotorSlot.Text = "Car";
-            // 
-            // lblCarSlot
-            // 
-            this.lblCarSlot.AutoSize = true;
-            this.lblCarSlot.Location = new System.Drawing.Point(106, 46);
-            this.lblCarSlot.Name = "lblCarSlot";
-            this.lblCarSlot.Size = new System.Drawing.Size(34, 13);
-            this.lblCarSlot.TabIndex = 8;
-            this.lblCarSlot.Text = "Motor";
-            // 
-            // setAPenaltyToolStripMenuItem
-            // 
-            this.setAPenaltyToolStripMenuItem.Name = "setAPenaltyToolStripMenuItem";
-            this.setAPenaltyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.setAPenaltyToolStripMenuItem.Text = "Set a Penalty";
-            this.setAPenaltyToolStripMenuItem.Click += new System.EventHandler(this.setAPenaltyToolStripMenuItem_Click);
             // 
             // index
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(733, 459);
-            this.Controls.Add(this.lblCarSlot);
-            this.Controls.Add(this.lblMotorSlot);
-            this.Controls.Add(this.lbl_output);
             this.Controls.Add(this.txtVehicleType);
             this.Controls.Add(this.pnlContainer);
             this.Controls.Add(this.panel1);
@@ -546,12 +531,11 @@
         private System.Drawing.Printing.PrintDocument printDocument1;
         private System.Windows.Forms.PrintPreviewDialog printPreviewDialog1;
         private System.IO.Ports.SerialPort serialPort1;
-        private System.Windows.Forms.Label lbl_output;
         private MaterialSkin.Controls.MaterialContextMenuStrip materialContextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem printToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem timeOutToolStripMenuItem;
-        private System.Windows.Forms.Label lblMotorSlot;
-        private System.Windows.Forms.Label lblCarSlot;
         private System.Windows.Forms.ToolStripMenuItem setAPenaltyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem superToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitRequestToolStripMenuItem;
     }
 }

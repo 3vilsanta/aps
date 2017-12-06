@@ -149,7 +149,6 @@ namespace eparkmo.employee
             {
                 cash = 0;
                 change = 0;
-                
             } 
 
             lbl_change.Text = change.ToString("N2");
