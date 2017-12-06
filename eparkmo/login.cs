@@ -46,10 +46,9 @@ namespace eparkmo
             string email = txt_email.Text.Trim();
             string pass = txt_password.Text.Trim();
 
-
             try
             {
-                if(email != "" && pass != "")
+                if (email != "" && pass != "")
                 {
                     var client = new RestClient(ENV.SERVER_URL);
                     var request = new RestRequest("login", Method.POST);
@@ -79,7 +78,7 @@ namespace eparkmo
                         string company_address = obj["company_address"].ToString();
 
 
-                        logged_user.user_id = int.Parse( obj["uid"].ToString());
+                        logged_user.user_id = int.Parse(obj["uid"].ToString());
                         logged_user.name = obj["user"]["name"].ToString();
                         logged_user.email = obj["user"]["email"].ToString();
                         logged_user.company_name = company_name;
@@ -105,18 +104,18 @@ namespace eparkmo
                         else
                         {
                             MessageBox.Show("Unkown User");
-                        } 
+                        }
                     }
                 }
                 else
                 {
                     MessageBox.Show("Username/Password is Required!");
-                } 
+                }
             }
-            catch(Exception x)
+            catch (Exception x)
             {
                 MessageBox.Show(x.Message);
-            } 
+            }
         }
 
         private void btn_forgotpassword_Click(object sender, EventArgs e)

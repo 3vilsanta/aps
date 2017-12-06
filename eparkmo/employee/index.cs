@@ -138,16 +138,18 @@ namespace eparkmo.employee
             //$table->double('remaining_wallet_balance');
             //$table->timestamps();
 
-            string qry = "SELECT " +
-                "id ," + 
-                "plate_number as 'Plate-#',"+
-                "vehicle_type as 'Vehicle',"+
-                "time_in as 'Time-IN',"+
-                "time_out as 'Time-OUT',"+
-                "trans_type as 'Type' " +
-                "FROM transactions "+
-                "WHERE time_out > time_in " +
-                "ORDER BY time_in desc";
+            string qry = "SELECT t.id ," +
+            "t.plate_number AS `Plate -#`," +
+            "t.vehicle_type AS `Vehicle`, " +
+            "t.time_in AS `Time - IN`," +
+            "t.time_out AS `Time - OUT`," +
+            "t.trans_type AS `Type`," +
+            "p.fee AS `Penalty` " +
+            "FROM transactions t " +
+            "LEFT JOIN penalty p " +
+            "ON t.`id` = p.`transactions_id` " +
+            "WHERE t.time_out > t.time_in " +
+            "ORDER BY t.`time_in` DESC ";
             con.Open(); 
             MySqlDataAdapter da = new MySqlDataAdapter(qry, con);
             DataTable dt = new DataTable();
@@ -173,16 +175,18 @@ namespace eparkmo.employee
             //$table->double('remaining_wallet_balance');
             //$table->timestamps();
 
-            string qry = "SELECT " +
-                "id ," +
-                "plate_number as 'Plate-#'," +
-                "vehicle_type as 'Vehicle'," +
-                "time_in as 'Time-IN'," +
-                "time_out as 'Time-OUT', " +
-                "trans_type as 'Type' " +
-                "FROM transactions " +
-                "WHERE time_out is null "+
-                "ORDER BY time_in desc";
+            string qry = "SELECT t.id ,"+
+            "t.plate_number AS `Plate -#`,"+
+            "t.vehicle_type AS `Vehicle`, "+
+            "t.time_in AS `Time - IN`,"+
+            "t.time_out AS `Time - OUT`,"+
+            "t.trans_type AS `Type`,"+
+            "p.fee AS `Penalty` "+
+            "FROM transactions t "+
+            "LEFT JOIN penalty p "+
+            "ON t.`id` = p.`transactions_id` "+
+            "WHERE t.`time_out` IS NULL "+
+            "ORDER BY t.`time_in` DESC ";
             con.Open();
             MySqlDataAdapter da = new MySqlDataAdapter(qry, con);
             DataTable dt = new DataTable();
@@ -534,6 +538,7 @@ namespace eparkmo.employee
                     0,
                     0,
                     "Offline",
+                    0,
                     logged_user.name,
                     ENV.TERMS_AND_CONDITION
                     );
@@ -564,6 +569,7 @@ namespace eparkmo.employee
             double cash,
             double change,
             string trans_type,
+            double penalty,
             string employee_name,
             string tc_link)
         {
@@ -600,22 +606,62 @@ namespace eparkmo.employee
             //
 
 
-            textToPrint += "Plate # : " + plate_no;
+            textToPrint += "Plate #       : " + plate_no;
             textToPrint +=  Environment.NewLine;
             //
 
-            textToPrint += "Vehicle Type : " + vehicle_type + Environment.NewLine;
+            textToPrint += "Vehicle Type  : " + vehicle_type + Environment.NewLine;
 
-            textToPrint += "Time IN : " + time_in.ToString() + Environment.NewLine;
+            textToPrint += "Time IN " + Environment.NewLine;
+            textToPrint += "     Date     : " + time_in.ToShortDateString() + Environment.NewLine;
+            textToPrint += "     Hour's   : " + time_in.ToShortTimeString() + Environment.NewLine;
 
-            textToPrint += "Time OUT : " + time_out + Environment.NewLine;
+            textToPrint += "Time OUT  " + Environment.NewLine;
+            if(time_out == DateTime.MinValue)
+            {
+                textToPrint += "     Date     : ---"  + Environment.NewLine;
+                textToPrint += "     Hour's   : ---"   + Environment.NewLine;
+            }
+            else
+            {
+                textToPrint += "     Date     : " + time_out.ToShortDateString() + Environment.NewLine;
+                textToPrint += "     Hour's   : " + time_out.ToShortTimeString() + Environment.NewLine;
+            }
+            
+            if(fee > 0)
+            {
+                textToPrint += "Fee           : " + fee.ToString("N2") + Environment.NewLine; 
+            }
+            else
+            {
+                textToPrint += "Fee           : ---" + Environment.NewLine;
+            }
+            
+            if(cash >0)
+            {
+                textToPrint += "Cash          : " + cash.ToString("N2") + Environment.NewLine;
+            }else
+            {
+                textToPrint += "Cash          : ---" + Environment.NewLine;
+            }
+            
+            if(change > 0)
+            {
+                textToPrint += "Change        : " + change.ToString("N2") + Environment.NewLine;
+            }else
+            {
+                textToPrint += "Change        : ---" + Environment.NewLine;
+            }
+            
 
-            textToPrint += "Fee : " + fee.ToString("N2") + Environment.NewLine;
-
-            textToPrint += "Cash : " + cash.ToString("N2") + Environment.NewLine;
-
-            textToPrint += "Change : " + change.ToString("N2")  + Environment.NewLine;
-
+            textToPrint += "--------" + Environment.NewLine;
+            if(penalty == 0){
+                textToPrint += "Penalty       : ---" + Environment.NewLine;
+            }
+            else{
+                textToPrint += "Penalty       : " + penalty + Environment.NewLine;
+            }
+            
             //footer  
             textToPrint += "--------------------------------" + Environment.NewLine;
             textToPrint += "Teller : " + logged_user.name + Environment.NewLine;
@@ -675,7 +721,19 @@ namespace eparkmo.employee
                 displayActive();
                 displayHistory();
 
-                string qry = "select * from transactions where id=@id and time_in is not null and time_out is not null";
+                string qry = "SELECT t.id,"+
+                    "t.vehicle_type as 'vehicle_type',"+
+                    "t.plate_number as 'plate_number',"+
+                    "t.time_in as 'time_in',"+
+                    "t.time_out as 'time_out',"+
+                    "t.parking_fee as 'parking_fee',"+
+                    "t.paid_amount as 'paid_amount',"+
+                    "t.paid_change as 'paid_change',"+
+                    "COALESCE(p.fee, 0) as 'fee' " +
+                "FROM transactions t "+
+                "LEFT JOIN penalty p "+
+                "ON t.id = p.`transactions_id` "+
+                "WHERE t.id = @id AND t.time_in IS NOT NULL AND t.time_out IS NOT NULL";
                 con.Open();
                 MySqlCommand cmd = new MySqlCommand(qry, con);
                 cmd.Parameters.AddWithValue("id", int.Parse(id));
@@ -694,6 +752,7 @@ namespace eparkmo.employee
                     dr.GetDouble("paid_amount") ,
                     dr.GetDouble("paid_change") ,
                     "Offline",
+                    dr.GetDouble("fee"),
                     logged_user.name,
                     ENV.TERMS_AND_CONDITION
                     );
