@@ -112,6 +112,17 @@ namespace eparkmo.employee
 
         private void logoutToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //current_assigned_employee_id
+            string qry = "update parking_lots " +
+                "SET status='offline', " +
+                "current_assigned_employee_id = (SELECT id from employees where users_id=@uid)" +
+                "WHERE area_code=(SELECT assigned_area_code from employees where users_id=@uid)";
+            con.Open();
+            MySqlCommand cmd = new MySqlCommand(qry, con);
+            cmd.Parameters.AddWithValue("uid", logged_user.user_id);
+            cmd.ExecuteNonQuery();
+            con.Close();
+            //
             this.Hide();
             Form x = new login();
             x.Show();
@@ -119,6 +130,17 @@ namespace eparkmo.employee
 
         private void index_FormClosed(object sender, FormClosedEventArgs e)
         {
+            //current_assigned_employee_id
+            string qry = "update parking_lots " +
+                "SET status='offline', " +
+                "current_assigned_employee_id = (SELECT id from employees where users_id=@uid)" +
+                "WHERE area_code=(SELECT assigned_area_code from employees where users_id=@uid)";
+            con.Open();
+            MySqlCommand cmd = new MySqlCommand(qry, con);
+            cmd.Parameters.AddWithValue("uid", logged_user.user_id);
+            cmd.ExecuteNonQuery();
+            con.Close();
+            //
             Application.Exit();
         }
 
@@ -244,6 +266,7 @@ namespace eparkmo.employee
                         //MessageBox.Show(transaction_id.ToString());
 
                         //code here to open the gate
+                        serialPort1.Write("1");
                         displayActive();
 
                         //vehicle_type
@@ -269,7 +292,8 @@ namespace eparkmo.employee
                     //let the user exit
 
                     qry = "SELECT * FROM transactions " +
-                    "WHERE client_id=(SELECT c.id from clients as c where c.users_id=@uid) AND time_in is null";
+                    "WHERE client_id=(SELECT c.id from clients as c where c.users_id=@uid) "+
+                    "AND time_in is not null";
                     con.Open();
                     MySqlCommand ccmd = new MySqlCommand(qry, con);
                     ccmd.Parameters.AddWithValue("uid", int.Parse(o_uid));
@@ -277,6 +301,10 @@ namespace eparkmo.employee
                     if (ddr.Read())
                     {
                         int transaction_id = ddr.GetInt16("id");
+                        string xxVT = ddr.GetString("vehicle_type");
+                        DateTime time_in = ddr.GetDateTime("time_in");
+                        int client_id = ddr.GetInt16("client_id");
+                        int tId = ddr.GetInt16("id");
                         con.Close();
 
                         //get wallet of user
@@ -288,26 +316,69 @@ namespace eparkmo.employee
                         con.Close();
                         //get wallet
                         double uwallet = udt.Rows[0].Field<double>("wallet");
+
+                        //deducting section
+                        string qryxx = "Select * from parking_fees where costing_for=@cf";
+                        con.Open();
+                        MySqlDataAdapter daxx = new MySqlDataAdapter(qryxx, con);
+                        daxx.SelectCommand.Parameters.AddWithValue("cf", xxVT);
+                        DataTable dtxx = new DataTable();
+                        daxx.Fill(dtxx);
+                        con.Close();
+
+                        int first_hours = dtxx.Rows[0].Field<int>("first_hours");
+                        double fee = dtxx.Rows[0].Field<double>("fee");
+                        double succeeding_hour_fee = dtxx.Rows[0].Field<double>("succeeding_hour_fee");
+
+                        DateTime ttime_out = DateTime.Now;
                         
+                        //lbl_timeout.Text = ttime_out.ToString();
 
+                        TimeSpan totalStay = ttime_out - time_in;
+                        double totalHours;
 
-                        //string saveqry = "UPDATE transactions SET time_in=@now " +
-                        //    "WHERE id=@id";
-                        //con.Open();
-                        //MySqlCommand saveCmd = new MySqlCommand(saveqry, con);
-                        //saveCmd.Parameters.AddWithValue("id", transaction_id);
-                        //saveCmd.Parameters.AddWithValue("now", DateTime.Now);
-                        //saveCmd.ExecuteNonQuery();
-                        //con.Close();
-                        ////MessageBox.Show(transaction_id.ToString());
+                        double convertedtoDb = double.Parse(totalStay.TotalHours.ToString());
+                        totalHours = Math.Round(convertedtoDb, 0);
 
-                        ////code here to open the gate
-                        //displayActive();
+                        //lbl_totalhours.Text = totalHours.ToString();
+                        double fees;
+                        fees = 0;
+                        fees = fee;
+                        if (totalHours > first_hours) //if mas mataas sa unang tatlong oras
+                        {
+                            double xx = totalHours - 3; 
+                            fees += xx * succeeding_hour_fee; 
+                        }
 
-                        ////vehicle_type
-                        //updateSlot("Car", o_position);
-                        //MessageBox.Show("New vehicle has been enter.");
-                        //
+                        uwallet -= fees;
+                        //update the client wallet 
+                        string xxUpdateWallet = "UPDATE clients SET wallet=@nWallet "+
+                            "WHERE id=@cid";
+                        MySqlCommand xxCmdWUP;con.Open();
+                        xxCmdWUP = new MySqlCommand(xxUpdateWallet, con);
+                        xxCmdWUP.Parameters.AddWithValue("nWallet", uwallet);
+                        xxCmdWUP.Parameters.AddWithValue("cid", client_id);
+                        xxCmdWUP.ExecuteNonQuery();con.Close();
+                        //update and close this transaction
+                        string qryyy = "UPDATE transactions SET time_out=@to," +
+                            "parking_fee=@fees,updated_at=@ua WHERE id=@id";
+                        con.Open();
+                        MySqlCommand cmdyy = new MySqlCommand(qryyy, con);
+                        cmdyy.Parameters.AddWithValue("@to", ttime_out);
+                        cmdyy.Parameters.AddWithValue("@fees", fees);
+                        cmdyy.Parameters.AddWithValue("ua", DateTime.Now);
+                        cmdyy.Parameters.AddWithValue("@id", tId);
+                        cmdyy.ExecuteNonQuery();
+                        con.Close();
+
+                        
+                        serialPort1.Write("2");
+                        
+                        //put a notification here
+
+                        displayActive();
+                        displayHistory();
+                        MessageBox.Show("May  Bagong lumabas na sasakyan", "System Message");
                     }
                     else
                     {
@@ -814,6 +885,13 @@ namespace eparkmo.employee
             var x = new employee.super.request();
             x.ShowDialog();
             serialPort1.Open();
+        }
+
+        private void addWalletToAUserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var x = new employee.add_wallet();
+            x.ShowDialog();
+
         }
 
         private void setAPenaltyToolStripMenuItem_Click(object sender, EventArgs e)

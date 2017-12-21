@@ -146,6 +146,12 @@
     <Compile Include="admin\wallet_request\pending.Designer.cs">
       <DependentUpon>pending.cs</DependentUpon>
     </Compile>
+    <Compile Include="employee\add_wallet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="employee\add_wallet.Designer.cs">
+      <DependentUpon>add_wallet.cs</DependentUpon>
+    </Compile>
     <Compile Include="employee\index.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -224,6 +230,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="admin\wallet_request\pending.resx">
       <DependentUpon>pending.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="employee\add_wallet.resx">
+      <DependentUpon>add_wallet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="employee\index.resx">
       <DependentUpon>index.cs</DependentUpon>

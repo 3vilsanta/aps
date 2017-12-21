@@ -80,7 +80,7 @@
             this.dgv.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dgv.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv.Size = new System.Drawing.Size(757, 314);
+            this.dgv.Size = new System.Drawing.Size(684, 314);
             this.dgv.TabIndex = 41;
             // 
             // label1
@@ -101,7 +101,7 @@
             this.Controls.Add(this.dgv);
             this.Controls.Add(this.label1);
             this.Name = "pending";
-            this.Size = new System.Drawing.Size(813, 398);
+            this.Size = new System.Drawing.Size(740, 398);
             this.Load += new System.EventHandler(this.pending_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
             this.ResumeLayout(false);

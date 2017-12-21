@@ -96,6 +96,19 @@ namespace eparkmo
                             string pl_id = obj["pl_id"].ToString();
                             logged_user.assigned_parking_id = int.Parse(pl_id);
 
+                            //assigned this employee 
+                            //statusvarchar(191) NOT NULL
+                            //current_assigned_employee_id
+                            string qry = "update parking_lots "+
+                                "SET status='online', "+
+                                "current_assigned_employee_id = (SELECT id from employees where users_id=@uid)" +
+                                "WHERE area_code=(SELECT assigned_area_code from employees where users_id=@uid)";
+                            con.Open();
+                            MySqlCommand cmd = new MySqlCommand(qry, con);
+                            cmd.Parameters.AddWithValue("uid", int.Parse(obj["uid"].ToString()));
+                            cmd.ExecuteNonQuery();
+                            con.Close(); 
+                            //
 
                             this.Hide();
                             employee.index i = new employee.index();

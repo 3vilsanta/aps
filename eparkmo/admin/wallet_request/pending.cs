@@ -27,7 +27,7 @@ namespace eparkmo.admin.wallet_request
         }
         public void displayWalletRequest()
         { 
-            string qry = "SELECT id,image_path,users_id,amount,status,created_at "+
+            string qry = "SELECT * "+
                 "FROM wallet_payments "+
                 "WHERE status = 'pending'";
             con.Open();
